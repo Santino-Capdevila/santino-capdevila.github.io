@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screen recorder</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --text:#202124; --muted:#5f6368; --bg:#fff; --accent:#1a73e8; --line:#e3e3e3; }
+  @media (prefers-color-scheme: dark) { :root { --text:#e8eaed; --muted:#9aa0a6; --bg:#202124; --accent:#8ab4f8; --line:#3c4043; } }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui, Arial, sans-serif; }
+  main { max-width:640px; margin:40px auto; padding:0 16px; }
+  button { font:inherit; padding:10px 18px; border-radius:6px; border:1px solid var(--line); background:var(--bg); color:var(--text); cursor:pointer; }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button:disabled { opacity:.5; cursor:default; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; }
+  #time { font-variant-numeric:tabular-nums; font-size:28px; }
+  .muted { color:var(--muted); font-size:14px; }
+  video { width:100%; border:1px solid var(--line); border-radius:8px; margin-top:12px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Screen recorder</h1>
+  <p class="muted">Records your screen in this browser and saves a .webm file to your computer. Nothing is uploaded anywhere.</p>
+  <div class="row">
+    <button id="start" class="primary">Start recording</button>
+    <button id="stop" disabled>Stop and save</button>
+  </div>
+  <div id="time">0:00</div>
+  <p class="muted" id="status">When asked, choose <strong>Entire screen</strong>, then switch to the window you want to record.</p>
+  <video id="preview" controls hidden></video>
+</main>
+<script>
+  let recorder, chunks = [], timer, started;
+  const $ = (id) => document.getElementById(id);
+
+  function tick() {
+    const s = Math.floor((Date.now() - started) / 1000);
+    $('time').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  $('start').onclick = async () => {
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: false });
+    } catch (e) {
+      $('status').textContent = 'Recording was not started: ' + e.message;
+      return;
+    }
+    const type = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'].find((t) => MediaRecorder.isTypeSupported(t));
+    recorder = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6000000 });
+    chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    recorder.onstop = () => {
+      clearInterval(timer);
+      stream.getTracks().forEach((t) => t.stop());
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'recording-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') + '.webm';
+      a.click();
+      $('preview').src = url;
+      $('preview').hidden = false;
+      $('status').textContent = 'Saved to your Downloads folder as ' + a.download + '.';
+      $('start').disabled = false;
+      $('stop').disabled = true;
+    };
+    stream.getVideoTracks()[0].onended = () => { if (recorder.state !== 'inactive') recorder.stop(); };
+    recorder.start(1000);
+    started = Date.now();
+    timer = setInterval(tick, 500);
+    $('start').disabled = true;
+    $('stop').disabled = false;
+    $('status').textContent = 'Recording… come back here and click "Stop and save" when you finish.';
+  };
+
+  $('stop').onclick = () => { if (recorder && recorder.state !== 'inactive') recorder.stop(); };
+</script>
+</body>
+</html>
