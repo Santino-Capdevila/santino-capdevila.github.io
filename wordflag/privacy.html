@@ -24,6 +24,7 @@
 <table><thead><tr><th>Permission</th><th>How Wordflag uses it</th></tr></thead><tbody>
 <tr><td><strong>The document you are using</strong><br><code>https://www.googleapis.com/auth/documents.currentonly</code></td><td>Read the text of the document where you open Wordflag, and change the highlight color of the matches. Wordflag also stores hidden markers (named ranges) inside that document that remember the original highlight colors, so Clear can restore them; Clear deletes the markers. Wordflag cannot see or open any other file in your Google Drive.</td></tr>
 <tr><td><strong>Display the sidebar</strong><br><code>https://www.googleapis.com/auth/script.container.ui</code></td><td>Show the Wordflag panel inside Google Docs.</td></tr>
+<tr><td><strong>Your email address and basic profile</strong><br><code>https://www.googleapis.com/auth/userinfo.email and .../userinfo.profile</code></td><td>The Google Workspace Marketplace adds these two permissions to every app it installs. Wordflag does not read, store or use your email address or profile.</td></tr>
 </tbody></table>
 <p>Wordflag reads your document only when you click Analyze or Clear in its sidebar. The analysis runs in Google Apps Script, on Google's servers. Wordflag has no servers of its own.</p>
 
