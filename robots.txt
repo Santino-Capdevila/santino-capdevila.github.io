@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://santino-capdevila.github.io/sitemap.xml

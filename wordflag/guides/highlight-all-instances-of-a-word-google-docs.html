@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to highlight all instances of a word in Google Docs (3 ways)</title>
+<meta name="description" content="Google Docs can find every instance of a word but cannot highlight them all at once. Here are three ways that work: Find, multi-select, and a free Apps Script.">
+
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header><div class="in"><a class="brand" href="/wordflag/">Wordflag</a><nav><a href="/wordflag/">Home</a><a href="/wordflag/support.html">Support</a><a href="/wordflag/privacy.html">Privacy</a><a href="/wordflag/terms.html">Terms</a></nav></div></header>
+<main>
+<h1>How to highlight all instances of a word in Google Docs</h1>
+<p class="lead">Google Docs can find every instance of a word, but it has no button to highlight them all at once. Here are three ways that work today, from quickest to most powerful.</p>
+
+<p>Typical reasons to do this: checking a draft against a client's list of banned words, making sure a brand name is always written the same way, or spotting a word you overuse ("very", "really", "just").</p>
+
+<h2>1. See every match for a moment: Find (Ctrl+F)</h2>
+<ol>
+<li>Press <strong>Ctrl+F</strong> (<strong>Cmd+F</strong> on a Mac).</li>
+<li>Type the word. Docs marks every match in the document and shows a count such as "1 of 3". The search ignores capitalization, so "Very" and "very" both count.</li>
+<li>Use the up and down arrows next to the box to jump from one match to the next.</li>
+</ol>
+<p>The limit: these marks disappear as soon as you close the Find box. They are not real highlights, and you can only search for one word at a time.</p>
+
+<h2>2. Highlight them yourself: multi-select, then one click</h2>
+<p>Since 2022 Google Docs lets you select several separate pieces of text at once and format them together.</p>
+<ol>
+<li>Use Find (method 1) to see where the word appears.</li>
+<li>Close the Find box and select the first match.</li>
+<li>Hold <strong>Ctrl</strong> (<strong>Cmd</strong> on a Mac) and select each other match.</li>
+<li>Click the <strong>Highlight color</strong> button (the marker icon in the toolbar) and pick a color. Every selected match is highlighted.</li>
+</ol>
+<p>This works well for a handful of matches in a short document. With dozens of matches, or a list of 20 banned words, it gets slow and it is easy to miss one.</p>
+
+<h2>3. Highlight every match automatically: a free Apps Script</h2>
+<p>Google Docs has a built-in script editor, Apps Script. This short script highlights every match of every word in your list, as whole words and in any capitalization.</p>
+<ol>
+<li>In your document, open <strong>Extensions &gt; Apps Script</strong>.</li>
+<li>Delete the sample code and paste the script below. Edit the <code>WORDS</code> list.</li>
+<li>Click <strong>Save</strong>, then <strong>Run</strong>. The first time, Google asks you to authorize your own script; because you wrote it and it is not published, Google shows an "unverified app" warning. Choose <strong>Advanced</strong>, then <strong>Go to</strong> your project, then <strong>Allow</strong>.</li>
+<li>Go back to the document: every match is highlighted.</li>
+</ol>
+<pre><code>// The words or phrases to highlight (letters, spaces, hyphens and apostrophes).
+const WORDS = ['very', 'really', 'in order to'];
+const COLOR = '#fff475'; // yellow
+
+function highlightWords() {
+  const body = DocumentApp.getActiveDocument().getBody();
+  WORDS.forEach(function (word) {
+    // Whole words, any capitalization: "very" becomes \b[Vv][Ee][Rr][Yy]\b
+    const pattern = '\\b' + word.replace(/[a-z]/gi, function (c) {
+      return '[' + c.toUpperCase() + c.toLowerCase() + ']';
+    }) + '\\b';
+    let match = body.findText(pattern);
+    while (match) {
+      match.getElement().asText()
+        .setBackgroundColor(match.getStartOffset(), match.getEndOffsetInclusive(), COLOR);
+      match = body.findText(pattern, match);
+    }
+  });
+}</code></pre>
+<p>Notes:</p>
+<ul>
+<li>To remove the highlights, select all (<strong>Ctrl+A</strong>), click <strong>Highlight color</strong> and choose <strong>None</strong>. This also removes any highlights you added by hand.</li>
+<li>The script only checks the main body of the document, not headers, footers or footnotes.</li>
+<li>"very" does not match "every", because the script looks for whole words.</li>
+</ul>
+
+<h2>The fast way: Wordflag</h2>
+<p>Highlight the words your client&#39;s style guide bans, your brand terms, and hard-to-read writing, right inside Google Docs. Your text never leaves Google.</p>
+<p class="box">Coming soon to the Google Workspace Marketplace. Questions? <a href="mailto:santinocloud00@gmail.com">santinocloud00@gmail.com</a></p>
+
+</main>
+<footer><div class="in">Wordflag is made by Santino Capdevila, an independent developer. Contact: <a href="mailto:santinocloud00@gmail.com">santinocloud00@gmail.com</a>.<br>Google Docs and Google Workspace are trademarks of Google LLC. This product is not made or endorsed by Google.</div></footer>
+</body>
+</html>

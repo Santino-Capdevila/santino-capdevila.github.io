@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to find passive voice in Google Docs (free Find trick)</title>
+<meta name="description" content="Google Docs has no passive voice checker. This Find and replace pattern finds most passive sentences in seconds, with no add-on. Here is how to use it and its limits.">
+
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header><div class="in"><a class="brand" href="/wordflag/">Wordflag</a><nav><a href="/wordflag/">Home</a><a href="/wordflag/support.html">Support</a><a href="/wordflag/privacy.html">Privacy</a><a href="/wordflag/terms.html">Terms</a></nav></div></header>
+<main>
+<h1>How to find passive voice in Google Docs</h1>
+<p class="lead">Google Docs does not have a passive voice checker. But its Find and replace box understands patterns (regular expressions), and one pattern finds most passive sentences in seconds.</p>
+
+<h2>What passive voice looks like</h2>
+<p>In the passive voice, the thing acted on comes first and the doer comes later, or not at all:</p>
+<ul>
+<li>Passive: "The report <strong>was written</strong> by the team." Active: "The team wrote the report."</li>
+<li>Passive: "Mistakes <strong>were made</strong>." (Who made them?)</li>
+</ul>
+<p>The pattern is a form of "to be" (is, are, was, were, be, been, being) followed by a past participle (written, approved, made). Passive voice is not wrong, but too much of it makes text longer and vaguer.</p>
+
+<h2>Find it with Find and replace</h2>
+<ol>
+<li>Open <strong>Edit &gt; Find and replace</strong> (<strong>Ctrl+H</strong>, or <strong>Cmd+Shift+H</strong> on a Mac).</li>
+<li>Check <strong>Use regular expressions</strong>.</li>
+<li>In <strong>Find</strong>, paste:
+<pre><code>\b(am|is|are|was|were|be|been|being)\s+\w+(ed|en)\b</code></pre></li>
+<li>Docs marks every match and shows the count, for example "1 of 4". Click <strong>Next</strong> to step through them and decide on each one. Do not click Replace.</li>
+</ol>
+<p>Want a permanent mark? While a match is selected you can close the box and apply a highlight color, or use the multi-select method in <a href="/wordflag/guides/highlight-all-instances-of-a-word-google-docs.html">how to highlight all instances of a word</a>.</p>
+
+<h2>What this pattern misses (and what it flags by mistake)</h2>
+<ul>
+<li><strong>Irregular participles</strong> that do not end in -ed or -en, such as "made", "sent", "built" or "put". "Mistakes were made" is not found. To catch them, add them to the end of the pattern: <code>\b(am|is|are|was|were|be|been|being)\s+(\w+(ed|en)|made|sent|built|put|done|found|kept|held)\b</code></li>
+<li><strong>Words in between</strong>, as in "was quickly approved".</li>
+<li><strong>Adjectives that look like participles</strong>: "She was tired" or "The room is open" are matched but are not passive. That is why you review each match instead of replacing.</li>
+</ul>
+
+<h2>How to fix a passive sentence</h2>
+<p>Ask "who did it?", put that at the start, and use the active verb:</p>
+<ul>
+<li>"The budget was approved by the board." → "The board approved the budget."</li>
+<li>"The emails were sent yesterday." → "We sent the emails yesterday."</li>
+</ul>
+<p>Keep the passive when the doer is unknown or does not matter ("The building was built in 1920"), or when you want the focus on the result.</p>
+
+<h2>The fast way: Wordflag</h2>
+<p>Highlight the words your client&#39;s style guide bans, your brand terms, and hard-to-read writing, right inside Google Docs. Your text never leaves Google.</p>
+<p class="box">Coming soon to the Google Workspace Marketplace. Questions? <a href="mailto:santinocloud00@gmail.com">santinocloud00@gmail.com</a></p>
+
+</main>
+<footer><div class="in">Wordflag is made by Santino Capdevila, an independent developer. Contact: <a href="mailto:santinocloud00@gmail.com">santinocloud00@gmail.com</a>.<br>Google Docs and Google Workspace are trademarks of Google LLC. This product is not made or endorsed by Google.</div></footer>
+</body>
+</html>
